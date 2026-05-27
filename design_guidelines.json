@@ -1,0 +1,91 @@
+{
+  "theme": "light_and_dark",
+  "archetype": "Pastel & Soft (Archetype 3) mixed with Clean App Utility",
+  "colors": {
+    "light": {
+      "background": "#F8FAFC",
+      "foreground": "#0F172A",
+      "primary": "#0EA5E9",
+      "primary_foreground": "#FFFFFF",
+      "card": "#FFFFFF",
+      "card_foreground": "#0F172A",
+      "muted": "#F1F5F9",
+      "muted_foreground": "#64748B",
+      "border": "#E2E8F0",
+      "ring": "#38BDF8",
+      "success": "#10B981"
+    },
+    "dark": {
+      "background": "#020617",
+      "foreground": "#F8FAFC",
+      "primary": "#38BDF8",
+      "primary_foreground": "#020617",
+      "card": "#0F172A",
+      "card_foreground": "#F8FAFC",
+      "muted": "#1E293B",
+      "muted_foreground": "#94A3B8",
+      "border": "#334155",
+      "ring": "#0EA5E9",
+      "success": "#10B981"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Outfit, sans-serif",
+      "body": "Manrope, sans-serif",
+      "monospace": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight font-bold",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight font-semibold",
+      "h3": "text-xl sm:text-2xl tracking-tight font-medium",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm text-muted-foreground uppercase tracking-widest"
+    }
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Generous spacing. Use p-6, p-8 for cards. gap-6 and gap-8 for grids.",
+    "container_max_width": "max-w-5xl mx-auto",
+    "grid_strategy": "Bento grid for analytics/history view. Centered focused layout for main tracking screen.",
+    "surface_strategy": "Soft Glassmorphism for header nav, Neumorphism/Crisp Cards for analytics widgets. 1px borders with slight drop shadow on light mode, subtle inner stroke on dark mode."
+  },
+  "motion": {
+    "hover_states": "Slight lift (-translate-y-1) and shadow-lg on interactive elements.",
+    "progress_ring": "Smooth stroke-dashoffset transition for the water filling animation.",
+    "page_transitions": "Fade and slight slide-up on enter."
+  },
+  "components_strategy": {
+    "buttons": "Rounded-full for main actions (friendly, approachable). Hover state lighter hue.",
+    "cards": "rounded-3xl (high corner radius) for a playful and modern app feel. No harsh edges.",
+    "charts": "Recharts (Shadcn Chart component) with rounded bar corners (radius={8}).",
+    "inputs": "Shadcn UI customized with rounded-2xl, soft background.",
+    "progress": "Custom SVG Circular Progress Ring, heavily styled with glowing drop shadow when full."
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1614957009514-50e8e5a9425d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwyfHxibHVlJTIwd2F0ZXIlMjByaXBwbGVzfGVufDB8fHx8MTc3NTg4Mzc4MHww&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background_light",
+        "description": "Close up photo of blue water ripples. Use as full screen background for login/signup page in light mode with a heavy blur or 50% white overlay."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1654856471304-44a1ab28d525?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwyfHxkYXJrJTIwd2F0ZXIlMjByaXBwbGVzfGVufDB8fHx8MTc3NTg4Mzc4NHww&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background_dark",
+        "description": "Dark water ripples. Use as full screen background for login/signup page in dark mode with heavy blur or 50% black overlay."
+      }
+    ]
+  },
+  "icons": {
+    "library": "lucide-react",
+    "usage": "Use Droplet for tracking, Bell for reminders, History for analytics, Settings for config."
+  },
+  "testing": {
+    "attributes": "Add data-testid to all interactive buttons (e.g. data-testid=\"add-water-btn\", data-testid=\"theme-toggle\")"
+  },
+  "key_features_guidance": {
+    "progress_tracker": "The main focal point should be a large circular progress ring right in the middle of the screen. Inside the ring, show current amount / goal (e.g., 1200 / 2000 ml).",
+    "quick_add_buttons": "Place below the progress ring. Buttons for 100ml, 250ml (glass), 500ml (bottle).",
+    "history_analytics": "Use a simple BarChart to show the last 7 days of water intake. Overlay a dotted line for the daily goal.",
+    "reminders": "In the settings, provide Select dropdowns or Switch toggles for 'Vibrate', 'Sound', and a mock select for 'Custom Sound'."
+  }
+}
