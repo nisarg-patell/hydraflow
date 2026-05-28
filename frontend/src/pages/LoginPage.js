@@ -5,6 +5,8 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
+import { Checkbox } from '../components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Droplet, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
@@ -14,11 +16,16 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [acceptedTC, setAcceptedTC] = useState(false);
 
   if (user) return <Navigate to="/" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!acceptedTC) {
+      setError('You must accept the Terms & Conditions to continue.');
+      return;
+    }
     setError('');
     setLoading(true);
     const result = await login(email, password);
@@ -88,6 +95,41 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="terms" 
+                checked={acceptedTC} 
+                onCheckedChange={(checked) => setAcceptedTC(checked)} 
+              />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                I accept the{' '}
+                <Dialog>
+                  <DialogTrigger className="text-primary hover:underline">
+                    Terms & Conditions
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Terms & Conditions</DialogTitle>
+                      <DialogDescription>
+                        Please read the following carefully.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="text-sm text-muted-foreground mt-4 space-y-4">
+                      <p>
+                        <strong>Disclaimer:</strong> This application is for <strong>testing purposes only</strong>. 
+                        It is not a medical device, nor should it be used for medical diagnosis, treatment, or advice.
+                      </p>
+                      <p>
+                        By using HydroFlow, you acknowledge that any data entered may be deleted or modified at any time without notice. We do not guarantee the accuracy of hydration tracking or reminders.
+                      </p>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </label>
+            </div>
             <Button
               type="submit"
               className="w-full rounded-full h-12 text-base font-semibold"
@@ -111,6 +153,10 @@ export default function LoginPage() {
             variant="outline"
             className="w-full rounded-full h-12 text-base font-medium gap-3 border-border/60 hover:bg-muted/50 transition-colors"
             onClick={async () => {
+              if (!acceptedTC) {
+                setError('You must accept the Terms & Conditions to continue.');
+                return;
+              }
               setLoading(true);
               const result = await loginWithGoogle();
               if (!result.success) setError(result.error);

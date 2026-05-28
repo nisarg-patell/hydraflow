@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Switch } from '../components/ui/switch';
 import { Separator } from '../components/ui/separator';
-import { Droplet, Bell, BellRing, Vibrate, Volume2, Sun, Moon, Clock, Target, Music, Plus, X, AlarmClock, Info, Code, Heart, ExternalLink } from 'lucide-react';
+import { Droplet, Bell, BellRing, Vibrate, Volume2, Sun, Moon, Clock, Target, Music, Plus, X, AlarmClock, Info, Code, Heart, ExternalLink, Download, Smartphone, LayoutGrid, CircleDot, Zap, List, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -55,6 +55,8 @@ export default function SettingsPage() {
   const [notifPermission, setNotifPermission] = useState('default');
   const [newReminderTime, setNewReminderTime] = useState('');
   const [addingTime, setAddingTime] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
   const reminderTimerRef = useRef(null);
   const customTimerRef = useRef([]);
 
@@ -79,6 +81,34 @@ export default function SettingsPage() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      toast.info('To install, tap your browser menu or share icon and select "Add to Home Screen".');
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      toast.success('App installed successfully!');
+    }
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
+
   // Setup interval-based reminder timer
   useEffect(() => {
     if (reminderTimerRef.current) clearInterval(reminderTimerRef.current);
@@ -93,6 +123,7 @@ export default function SettingsPage() {
     return () => {
       if (reminderTimerRef.current) clearInterval(reminderTimerRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.reminder_enabled, settings.reminder_interval, settings.notification_type, settings.custom_sound, notifPermission]);
 
   // Setup custom time-based reminders
@@ -121,6 +152,7 @@ export default function SettingsPage() {
       customTimerRef.current.forEach(t => clearTimeout(t));
       customTimerRef.current = [];
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.reminder_enabled, settings.custom_reminder_times, settings.notification_type, settings.custom_sound, notifPermission]);
 
   const sendNotification = () => {
@@ -596,6 +628,106 @@ export default function SettingsPage() {
           <div className="flex justify-between items-center">
             <span className="text-sm text-muted-foreground">Email</span>
             <span className="text-sm font-medium">{user?.email}</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Install App */}
+      <Card className="rounded-3xl shadow-sm" data-testid="install-app-card">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-green-500/10 flex items-center justify-center">
+              <Download className="w-5 h-5 text-green-500" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>Install App</CardTitle>
+              <CardDescription>Add HydroFlow to your home screen</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Install HydroFlow as an app on your device for faster access, fullscreen experience, and home screen shortcuts.
+          </p>
+          <Button
+            className="w-full rounded-full h-11 font-semibold"
+            onClick={() => {
+              // Try native prompt first, fallback to showing instructions
+              if (window.__pwaInstallPrompt) {
+                window.__pwaInstallPrompt.prompt();
+              } else {
+                toast.info(
+                  navigator.userAgent.match(/iPhone|iPad|iPod/)
+                    ? 'Tap the Share button in Safari, then "Add to Home Screen"'
+                    : navigator.userAgent.match(/Android/)
+                    ? 'Tap the browser menu (three dots), then "Add to Home screen"'
+                    : 'Click the install icon in the address bar, or use browser menu > "Install HydroFlow"'
+                );
+              }
+            }}
+            data-testid="settings-install-btn"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Install HydroFlow
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Widgets Gallery */}
+      <Card className="rounded-3xl shadow-sm" data-testid="widgets-card">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 flex items-center justify-center">
+              <Smartphone className="w-5 h-5 text-violet-500" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>Home Screen Widgets</CardTitle>
+              <CardDescription>Add widgets to your phone's home screen</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Open any widget below, then use your browser's "Add to Home Screen" option to pin it. Each widget works standalone and logs water directly to your account.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { name: 'Quick Add', desc: '2x2 grid with 4 drink sizes', path: '/widget/quick-add', icon: LayoutGrid, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+              { name: 'Progress Ring', desc: 'Circular progress + add buttons', path: '/widget/progress', icon: CircleDot, color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+              { name: 'One Tap', desc: 'Giant button to add 250ml instantly', path: '/widget/one-tap', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+              { name: 'Daily Stats', desc: 'Stats overview + goal tracking', path: '/widget/stats', icon: Target, color: 'text-green-500', bg: 'bg-green-500/10' },
+              { name: 'Compact', desc: 'Minimal progress bar + row of buttons', path: '/widget/compact', icon: Smartphone, color: 'text-violet-500', bg: 'bg-violet-500/10' },
+              { name: 'Log List', desc: 'Today\'s entries with delete & add', path: '/widget/log-list', icon: List, color: 'text-rose-500', bg: 'bg-rose-500/10' },
+              { name: 'Week View', desc: '7-day mini bar chart + quick add', path: '/widget/mini-bar', icon: BarChart3, color: 'text-indigo-500', bg: 'bg-indigo-500/10' },
+            ].map((w) => {
+              const Icon = w.icon;
+              return (
+                <a
+                  key={w.path}
+                  href={w.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3.5 rounded-2xl border border-border bg-card hover:border-primary/50 hover:bg-muted/50 transition-all duration-200 group"
+                  data-testid={`widget-link-${w.path.split('/').pop()}`}
+                >
+                  <div className={`w-10 h-10 rounded-xl ${w.bg} flex items-center justify-center shrink-0`}>
+                    <Icon className={`w-5 h-5 ${w.color}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">{w.name}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{w.desc}</p>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="bg-muted/50 rounded-2xl p-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <strong>How to add:</strong> Open a widget &rarr; Tap browser menu (&#8942; or share icon) &rarr; "Add to Home Screen". The widget will appear as a standalone app on your phone.
+            </p>
           </div>
         </CardContent>
       </Card>
