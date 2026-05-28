@@ -49,6 +49,7 @@ export default function SettingsPage() {
     wake_time: '08:00',
     sleep_time: '22:00',
     custom_reminder_times: [],
+    quick_add_position: 'bottom-right',
   });
   const [goalInput, setGoalInput] = useState('2000');
   const [saving, setSaving] = useState(false);
@@ -384,6 +385,42 @@ export default function SettingsPage() {
             >
               <Moon className="w-4 h-4" /> Dark
             </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Layout Settings */}
+      <Card className="rounded-3xl shadow-sm animate-fade-in-delay-2" data-testid="layout-settings-card">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
+              <LayoutGrid className="w-5 h-5 text-indigo-500" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>Layout</CardTitle>
+              <CardDescription>Customize the interface</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label className="text-sm">Quick Add Button Position</Label>
+            <Select
+              value={settings.quick_add_position || 'bottom-right'}
+              onValueChange={(v) => {
+                updateSetting('quick_add_position', v);
+                window.dispatchEvent(new CustomEvent('quick-add-position-changed', { detail: v }));
+              }}
+            >
+              <SelectTrigger className="rounded-2xl h-12">
+                <SelectValue placeholder="Select position" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                <SelectItem value="bottom-center">Bottom Center</SelectItem>
+                <SelectItem value="bottom-right">Bottom Right</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
