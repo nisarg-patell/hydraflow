@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Switch } from '../components/ui/switch';
 import { Separator } from '../components/ui/separator';
-import { Droplet, Bell, BellRing, Vibrate, Volume2, Sun, Moon, Clock, Target, Music, Plus, X, AlarmClock, Info, Code, Heart, ExternalLink, Download, Smartphone, LayoutGrid, CircleDot, Zap, List, BarChart3 } from 'lucide-react';
+import { Droplet, Bell, BellRing, Vibrate, Volume2, Sun, Moon, Clock, Target, Music, Plus, X, AlarmClock, Info, Code, Heart, ExternalLink, Download, Smartphone, LayoutGrid, CircleDot, Zap, List, BarChart3, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -38,7 +38,7 @@ const REMINDER_INTERVALS = [
 ];
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState({
     daily_goal: 2000,
@@ -833,6 +833,18 @@ export default function SettingsPage() {
           </div>
 
           <Separator />
+
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="outline"
+              onClick={logout}
+              className="rounded-full px-6 h-12 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20 gap-2 w-full max-w-xs"
+              data-testid="settings-logout-btn"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+          </div>
 
           <div className="text-center space-y-1">
             <p className="text-xs text-muted-foreground">
