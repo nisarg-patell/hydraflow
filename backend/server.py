@@ -56,7 +56,7 @@ def create_refresh_token(user_id: str) -> str:
 
 def set_auth_cookies(response: Response, access_token: str, refresh_token: str):
     response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=2592000, path="/")
 
 # --- Auth Helper ---
 async def get_current_user(request: Request) -> dict:
